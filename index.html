@@ -4,29 +4,33 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>Front-End Optimisation</title>
+		<title>Static Front End Optimization</title>
 
-		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
-		<meta name="author" content="Sergiy_Oliinyk@epam.com">
+		<meta name="description" content="CSS Methodologies. BEM - internal EPAM Labs">
+		<meta name="author" content="Yevhen Isakov">
 
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/night.css" id="theme">
+		<link rel="stylesheet" href="css/theme/epam.css" id="theme">
 
-		<!-- Code syntax highlighting -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+        <link rel="stylesheet" href="css/my.css" />
 
-		<!-- Printing and PDF exports -->
+        <!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/user.css">
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
 		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
 		</script>
 
 		<!--[if lt IE 9]>
@@ -40,268 +44,271 @@
 
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
-				<section>
-					<h1>Front-End Optimisation</h1>
-					<h3>11 Performance Advices</h3>
-					<p>
-						<small>by <a href="Sergiy_Oliinyk@epam.com">Sergiy Oliinyk</a></small>
-					</p>
+
+				<section id="mainpage" data-state="mainpage method-bg" data-background="url(assets/i/lake_view.jpg)">
+                    <h1>Static Front End Optimization</h1>
+                    <h3>Maksym Kolisnyk</h3>
 				</section>
 
-				<section>
-					<h2>0. FUNDAMENTALS</h2>
-					<p class="fragment">You are probably already know something</p>
-				</section>
+                <section id="principles" data-state="principles">
+                    <h2>Principles</h2>
+                    <ul class="list-type">
+                        <li class="fragment">Styles at the top, scripts at the bottom</li>
+                        <li class="fragment">Make fewer requests</li>
+                        <li class="fragment">Maximum parallelization</li>
+                    </ul>
+                </section>
 
-				<section>
-					<h2>​0.1 Styles at Top</h2>
-					<pre><code class="xml">
-&lt;html&gt;
-	&lt;head&gt;
-		&lt;link rel="stylesheet" href="css/style.css"&gt;
-	&lt;/head&gt;
-	&lt;body&gt;
+                <section id="performance-principles" data-state="performance-principles">
+                    <h2>Performance principles</h2>
+                    <ul class="list-type">
+                        <li class="fragment">Place links to styles at the top of the page</li>
+                        <li class="fragment">Place JavaScript below of the page</li>
+                        <li class="fragment">Do as few HTTP requests as possible</li>
+                        <li class="fragment">Distributing resources from multiple domains, you can increase the number
+                            of resources that the browser will load in parallel
+                        </li>
+                    </ul>
+                </section>
 
-	&lt;/body&gt;
-&lt;/html&gt;
-					</code></pre>
-					<ul>
-						<li class="fragment">​Page renders progressively, stylesheet by stylesheet - page don't looking broken on initial load.</li>
-						<li class="fragment">​User have a nice looking page faster - that's our primary goals as FE Developers.</li>
-					</ul>
-				</section>
+                <section id="dns-prefetching" data-state="dns-prefetching">
+                    <h2>DNS Prefetching</h2>
+                    <pre style="margin-bottom:60px;"><code class="xml"><link rel="prefetch" href="/my-next-page.htm"></code></pre>
+                    <div class="fragment">
+                        <h4>Page Prerendering</h4>
+                        <pre><code class="xml"><link rel="prerender" href="http://mydomain.com/my-next-page.htm"></code></pre>
+                    </div>
+                </section>
 
-				<section>
-					<h2>​​0.2 Scripts at Bottom</h2>
-					<pre><code class="xml">
-&lt;html&gt;
-	&lt;head&gt;
-		<!-- CSS STUFF -->
-	&lt;/head&gt;
-	&lt;body&gt;
-		&lt;script src="script.js"&gt;&lt;/script&gt;
-	&lt;/body&gt;
-&lt;/html&gt;
-					</code></pre>
-					<ul>
-						<li class="fragment">​​JS is blocking assets download: because it can change the page, and browsers may need to deal with that before it can move on to anything else.</li>
-						<li class="fragment">​​
-JS files respects order in which they are included (not with async attr, anyways).</li>
-					</ul>
-				</section>
+                <section id="resource-preloading" data-state="resource-preloading">
+                    <h2>Resource preloading</h2>
+                    <pre style="margin-bottom:60px;"><code class="css">
+.page-home         { background-image:url(home.jpg); }
+.page-about        { background-image:url(about.jpg); }
+.page-portfolio    { background-image:url(portfolio.jpg); }
+.page-contact      { background-image:url(contact.jpg); }
+                    </code></pre>
+                    <div class="fragment">
+                        <h4>Solution</h4>
+                        <pre><code class="xml"><link rel="prefetch" href="sprite.png"></code></pre>
+                    </div>
+                </section>
 
-				<section>
-					<h2>​​​0.3 Minify Your Styles</h2>
-					<pre><code class="css">
-.hey .there .students {
-  display: none;
+                <section id="minisification-gzip" data-state="minisification-gzip">
+                    <h2>Minisification and gzip</h2>
+                    <img class="gzip-logo" src="assets/i/gzip.png" alt=""/>
+                </section>
+
+                <section id="optimization-images-sprites" data-state="optimization-images-sprites">
+                    <h2>Optimization of images</h2>
+                    <h4>Sprites</h4>
+                    <img src="assets/i/sprites.png" alt="">
+                </section>
+
+                <section id="optimization-images-retina-css" data-state="optimization-images-retina-css">
+                    <h2>Optimization of images</h2>
+                    <h4>Retina (CSS Path)</h4>
+                    <pre><code class="css">
+@media only screen and (-Webkit-min-device-pixel-ratio: 1.5),
+only screen and (-moz-min-device-pixel-ratio: 1.5),
+only screen and (-o-min-device-pixel-ratio: 3/2),
+only screen and (min-device-pixel-ratio: 1.5) {
+  .icon {
+    background-image: url(example@2x.png);
+  }
 }
+                    </code></pre>
+                </section>
 
-.another .selector:before {
-  display: block;  
-  content: 'OMG';
+                <section id="optimization-images-retina-html" data-state="optimization-images-retina-html">
+                    <h2>Optimization of images</h2>
+                    <h4>Retina (HTML Path)</h4>
+                    <pre><code class="xml">
+<figure>
+ <picture>
+   <source srcset="/image.png" media="(min-width: 900px)">
+   <source srcset="/image-240-180.jpg,
+                   /image.jpg 2x" media="(min-width: 450px)">
+   <img src="http://site.ru/image-120-90.jpg"
+        srcset="/image-240-180.jpg 2x"
+        alt=""
+        title=""
+        longdesc="">
+  </picture>
+ <figcaption>Signature</figcaption>
+</figure>
+                    </code></pre>
+                </section>
+
+                <section id="optimization-images-progressive" data-state="optimization-images-progressive">
+                    <h2>Optimization of images</h2>
+                    <h4>Progressive jpegs</h4>
+                    <img src="assets/i/kickass-pjpeg.jpg" alt="">
+                </section>
+
+                <section id="operation-browser" data-state="operation-browser">
+                    <h2>How browser works</h2>
+                    <ul class="list-type">
+                        <li class="fragment">HTML Parsing</li>
+                        <li class="fragment">CSS Parsing</li>
+                        <li class="fragment">Dom Tree</li>
+                        <li class="fragment">Render Tree</li>
+                        <li class="fragment">Linkage</li>
+                        <li class="fragment">Rendering</li>
+                    </ul>
+                </section>
+
+                <section id="compositing" data-state="compositing">
+                    <h2>Compositing (CPU)</h2>
+                    <ul class="list-type">
+                        <li class="fragment">Page is divided into layers</li>
+                        <li class="fragment">Layers are rasterized</li>
+                        <li class="fragment">Layers are displayed on the screen</li>
+                    </ul>
+                </section>
+
+                <section id="accelerating-composition" data-state="accelerating-composition">
+                    <h2>GPU Accelerating Composition</h2>
+                    <ul class="list-type">
+                        <li class="fragment">Page is divided into layers</li>
+                        <li class="fragment">Layers are rasterized into textures</li>
+                        <li class="fragment">Textures are loaded into the GPU</li>
+                        <li class="fragment">Compositor instructs the GPU how to collect the final image</li>
+                    </ul>
+                </section>
+
+                <section id="accelerating-composition-video" data-state="accelerating-composition-video">
+                    <h2>GPU Rasterization Before/After</h2>
+                    <video src="assets/video/MediumSevereHermitcrab.webm" autoplay loop></video>
+                </section>
+
+                <section id="layers" data-state="layers">
+                    <h2>Layering conditions</h2>
+                    <ul class="list-type">
+                        <li>3D transform</li>
+                        <li>&lt;video&gt;</li>
+                        <li>&lt;canvas&gt;</li>
+                        <li>plugins (flash, silverlight)</li>
+                        <li>css animations opacity or transform</li>
+                        <li>css filters</li>
+                    </ul>
+                </section>
+
+                <section id="debug" data-state="debug">
+                    <h2>Debug</h2>
+                    <ul class="list-type">
+                        <li>Desktop Webkit: Show composited layer borders</li>
+                        <li>iOS: XCode, connect to Mac</li>
+                        <li>Android: connect to Mac</li>
+                    </ul>
+                </section>
+
+                <section id="layers-for-animations" data-state="layers-for-animations">
+                    <h2>Layers for animations</h2>
+                    <ul class="list-type">
+                        <li>opacity</li>
+                        <li>transform</li>
+                        <li>filter</li>
+                    </ul>
+                </section>
+
+				<section id="pyramid" data-state="pyramid">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+				</section>
+
+                <section id="advice" data-state="advice">
+                    <h2>Advice</h2>
+                    <ul class="list-type">
+                        <li class="fragment">GPU like cash</li>
+                        <li class="fragment">Prepare the texture in advance</li>
+                        <li class="fragment">Do not create extra layers</li>
+                    </ul>
+                </section>
+
+                <section id="animation-on-steroids" data-state="animation-on-steroids">
+                    <h2>Animation on steroids</h2>
+                    <div class="fragment">
+                        <h4>Old school</h4>
+                        <pre><code class="css">
+*{
+    translateZ();
+    translate3d();
 }
-					</code></pre>
-					<small>123 B</small>
-					<div class="fragment">
-						<pre><code class="css">
-.hey .there .students{display:none}.another .selector:before{display:block;content:'OMG'}
-						</code></pre>
-						<small>89 B</small>
-					</div>
-					<ul>
-						<li class="fragment">​​In average you gain 25-30% reduce in a filesize.</li>
-					</ul>
-				</section>
-
-				<section>
-					<h2>​​​0.4 Combine Your Styles</h2>
-					<pre><code class="xml">
-&lt;html&gt;
-	&lt;head&gt;
-		&lt;link rel="stylesheet" href="css/general.css"&gt;
-		&lt;link rel="stylesheet" href="css/forms.css"&gt;
-		&lt;link rel="stylesheet" href="css/buttons.css"&gt;
-		&lt;link rel="stylesheet" href="css/icons.css"&gt;
-	&lt;/head&gt;
-	&lt;body&gt;
-	&lt;/body&gt;
-&lt;/html&gt;
-					</code></pre>
-					<div class="fragment">​​
-					<pre><code class="xml">
-&lt;html&gt;
-	&lt;head&gt;
-		&lt;link rel="stylesheet" href="css/styles.css"&gt;
-	&lt;/head&gt;
-	&lt;body&gt;
-	&lt;/body&gt;
-&lt;/html&gt;
-					</code></pre>
-					</div>
-					<small>
-					<ul>
-						<li class="fragment">​​1 server request instead of 4</li>
-						<li class="fragment">​​Browser can handle only several ammount of connections at a time</li>
-					</ul>
-					</small>
-				</section>
-
-				<section>
-					<h2>​​​​0.5 Use Image Sprites</h2>
-					<small>(if there's really no way to use vector gpraphics instead)</small>
-					<pre><code class="css">
-.button-ok i {
-	background: url('images/button-ok.png');
+                        </code></pre>
+                    </div>
+                    <div class="fragment">
+                        <h4>New generation</h4>
+                        <pre><code class="css">
+*{
+    will-change: transform, opacity;
 }
-.button-no i {
-	background: url('images/button-no.png');
+                        </code></pre>
+                    </div>
+                </section>
+
+                <section id="do-not-use" data-state="do-not-use">
+                    <h2>Do not use</h2>
+                    <pre><code class="css">
+*, *::before, *::after {
+    will-change: all;
 }
-					</code></pre>
-					<div class="fragment">​​
-					<pre><code class="css">
-.button-ok i {
-	background: url('images/sprite.png') 0 0;
+                        </code></pre>
+                </section>
+
+                <section id="it-useless" data-state="it-useless">
+                    <h3>It's useless</h3>
+                    <pre><code class="css">
+.element:hover {
+    will-change: transform;
+    transition: transform 2s;
+    transform: rotate(30deg) scale(1.5);
 }
-.button-no i {
-	background: url('images/sprite.png') 25px 25px;
+                        </code></pre>
+                </section>
+
+                <section id="click-event" data-state="click-event">
+                    <h2>Click event</h2>
+                    <pre><code class="css">
+.element { transition: transform 1s ease-out; }
+
+.element:hover { will-change: transform; }
+
+.element:active { transform: rotateY(180deg); }
+                    </code></pre>
+                    <pre class="fragment"><code class="css">
+.element { transition: opacity .3s linear; }
+
+.ancestor:hover .element { will-change: opacity; }
+
+.element:hover { opacity: .5; }
+                    </code></pre>
+                </section>
+
+                <section id="remove-will-change" data-state="remove-will-change">
+                    <h2>Remove will-change</h2>
+                    <pre><code class="js">
+var el = document.getElementById('element');
+el.addEventListener('mouseenter', hintBrowser);
+el.addEventListener('animationEnd', removeHint);
+function hintBrowser() {
+    this.style.willChange = 'transform, opacity';
 }
-					</code></pre>
-					</div>
-					<ul>
-						<li class="fragment">​​Single asset request (and yes, it's cached)</li>
-						<li class="fragment">​​Do not create sprites by hand - automate it </li>
-						<li class="fragment">​​<a href="http://wearekiss.com/spritepad">SpritePad</a>, <a href="http://compass-style.org/help/tutorials/spriting/">Compass Sprite Generator</a>, <a href="https://github.com/zenorocha/browser-diet/wiki/Tools#use-css-sprites">etc.</a></li>
-					</ul>
-				</section>
-
-				<section>
-					<h2>​​​​​0.6 Minify Image Assets</h2>
-					<div class="left" style="width: 45%; float: left;">
-						<img src="img/woods-huge.png">
-						<small>​1.1Mb</small>
-					</div>
-					<div class="fragment" style="width: 45%; float: right;">
-						<img src="img/woods-small.png">
-						<small>​623.5Kb</small>
-					</div>
-					<div class="fragment" style="clear: both;">44% smaller size in this case</div>
-					<div class="fragment"><small>​This one is really no brainer, smaller images = faster page poad</small></div>
-					<div class="fragment"><small>​Yes, you should automate it too: <a href="https://github.com/gruntjs/grunt-contrib-imagemin">Grunt</a> or <a href="https://github.com/sindresorhus/gulp-imagemin">Gulp</a></small></div>
-				</section>
-
-				<section>
-					<h2>0.7 ​​​​​Content Delivery Networks (CDN)</h2>
-					<img src="img/cdn-cloud.png" style="background: none; border: none;">
-					<small class="fragment">Browser can handle only a several connections to a several server.</small>
-					<p><span class="fragment">More servers</span><span class="fragment"> = More simultanious downloads</span><span class="fragment"> = Faster page load</span></p>
-				</section>
-
-				<section>
-					<h2>0.8 Try Out Async</h2>
-					<pre><code class="xml">
-		&lt;script async src="some.third.party.script.js"&gt;&lt;/script&gt;
-					</code></pre>
-					<p class="fragment">The script is downloaded asynchronously while the rest of the page continues to get parsed. The script is guaranteed to be executed as soon as the download is complete. Keep in mind that multiple async scripts will be executed in no specific order.</p>
-				</section>
-
-				<section>
-					<h2>0.9 Data URI</h2>
-					<pre><code class="css">
-.icon-foo {
-  background-image: url('foo.png');
+function removeHint() {
+    this.style.willChange = 'auto';
 }
-					</code></pre>
-					<div class="fragment">
-					<pre><code class="css">
-.icon-foo {
-  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII%3D');
-}
-					</code></pre>
-					</div>
-					<ul>
-						<li class="fragment">All browsers from IE8 and above support this base64-encoded technique.</li>
-						<li class="fragment">You can avoid sprites, if there's not much images there</li>
-						<li class="fragment"><small>However has the disadvantage of growing the size of your HTML/CSS considerably if you have large images. It is not recommended to use this method if you aren't gzipping your HTML/CSS during HTTP requests as the size overhead might negate the speed gains you get from minimizing the number of HTTP requests.</small></li>
-					</ul>
-				</section>
+                    </code></pre>
+                </section>
 
-				<section>
-					<h2>0.10 prefer &lt;link&gt; over @import</h2>
-					<pre><code class="xml">
-&lt;link rel="stylesheet" href="css/styles.css"&gt;
-					</code></pre>
-					<div class="fragment">
-					<pre><code class="css">
-@import url('style.css');
-					</code></pre>
-					</div>
-					<ul>
-						<li class="fragment">@import will work only if put on a top of a file, which is not always obvious</li>
-						<li class="fragment">When you use the second option through an external stylesheet, the browser is incapable of downloading the asset in parallel, which can block the download of other assets.</li>
-					</ul>
-				</section>
+                <section id="can-i-use" data-state="can-i-use">
+                    <img src="assets/i/can-i-use.png" alt="">
+                </section>
 
-				<section>
-					<h2>0.11 Minimize Repaints and Reflows</h2>
-					<pre><code class="js">
-var myList = document.getElementById("myList");
-
-for (var i = 0, len = arr.length; i &lt; len; i++) {
-    
-    myList.innerHTML += "&lt;li&gt;" + arr[i].title + "&lt;/li&gt;"; //reflow - appending to element
-    
-}
-					</code></pre>
-					<small class="fragment">In the above for loop, a reflow will be triggered for every iteration of the loop. 10 iterations cause 10 reflows.</small>
-					
-					<pre class="fragment"><code class="js">
-var constructedHTML = "";
-
-for (var i = 0, len = arr.length; i &lt; len; i++) {
-    constructedHTML += "&lt;li&gt;" + arr[i].title + "&lt;/li&gt;"; //no reflow - appending to string
-}
-
-document.getElementById("myList").innerHTML = constructedHTML; //reflow
-					</code></pre>
-					<small class="fragment">In this scenario, the elements are being constructed within a string. Not a single reflow is created by the loop, as the DOM is not being altered. Only once the array has been completely looped through is the string then applied as the innerHTML of an object, causing the only reflow of the function.</small>
-				</section>
-
-
-				<section>
-					<h2>Well, hope you enjoyed.</h2>
-					<img src="img/me.png" style="background: none; border: none;">
-					<p>Serhii Oliinyk</p>
-					<p>Serhii_Oliinyk@epam.com</p>
-				</section>
-
-
-				​
-				<!-- 
-				0. FUNDAMENTALS
-				0.1 Styles at Top
-				- Page renders progressively, stylesheet by stylesheet - page don't looking broken on initial load.
-				- User have a nice looking page faster, which our primary goals as FE Developers.
-				0.2 Scripts at Bottom
-				- JS is blocking assets downloads: because it can change the page, and browsers may need to deal with that before it can move on to anything else.
-				- JS files respects order in which they are included (not with async attr, anyways).
-				0.3 Minify Your Styles
-				- Always minify your production styles, it's easy.
-				0.4 Combine Your Styles
-				- We want to have as less requests as possible.
-				Having a smaller number of files will result in a smaller number of requests and a faster loading page. Amazing!
-				0.5 Use Image Sprites (if there's really no way to use vector gpraphics instead)
-				- Very very old technique of aggregating all used image backgrounds into one.
-				Yet again, to minimize requests to server.
-				0.6 Minify Image Assets
-				- That is really no brainer, just use one of these:
-				https://github.com/gruntjs/grunt-contrib-imagemin
-				https://www.npmjs.com/package/gulp-imagemin
-				1. ADVANCED
-				1.1 REPAINT & REFLOW
-				1.2 -->
-
-				
+                <section id="thank-you" data-state="thank-you">
+                    <h2>Thank you!</h2>
+                </section>
 			</div>
 
 		</div>
@@ -311,28 +318,37 @@ document.getElementById("myList").innerHTML = constructedHTML; //reflow
 
 		<script>
 
-			// Full list of configuration options available at:
+			// Full list of configuration options available here:
 			// https://github.com/hakimel/reveal.js#configuration
 			Reveal.initialize({
-				controls: true,
+				controls: false,
 				progress: true,
 				history: true,
 				center: true,
+                slideNumber: true,
 
-				transition: 'slide', // none/fade/slide/convex/concave/zoom
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'fade', // default/cube/page/concave/zoom/linear/fade/none
+                transitionSpeed: 'fast',
 
-				// Optional reveal.js plugins
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
 				dependencies: [
 					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
 					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
 					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
 					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-					{ src: 'plugin/zoom-js/zoom.js', async: true },
-					{ src: 'plugin/notes/notes.js', async: true }
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
 				]
 			});
 
 		</script>
-
+        <script>
+            Reveal.configure({backgroundTransition: 'fade'});
+        </script>
 	</body>
 </html>
